@@ -6,7 +6,7 @@ import { createBooking } from "@/app/_lib/actions";
 import SubmitButton from "./SubmitButton";
 
 function ReservationForm({ cabin, user }) {
-  const { range, resetRange } = useReservation();
+  const { range } = useReservation();
 
   const { maxCapacity, regularPrice, discount, id } = cabin;
 
@@ -45,11 +45,7 @@ function ReservationForm({ cabin, user }) {
       </div>
 
       <form
-        // action={createBookingWithData}
-        action={async (formData) => {
-          await createBookingWithData(formData);
-          resetRange();
-        }}
+        action={createBookingWithData}
         className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col"
       >
         <div className="space-y-2">
