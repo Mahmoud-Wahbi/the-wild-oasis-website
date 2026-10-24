@@ -1,8 +1,10 @@
 import Link from "next/link";
+import ClearReservationRange from "@/app/_components/ClearReservationRange";
 
 export default function Page() {
   return (
     <div className="text-center space-y-6 mt-4">
+      <ClearReservationRange />
       <h1 className="text-3xl font-semibold">
         Thank you for your reservation!
       </h1>
