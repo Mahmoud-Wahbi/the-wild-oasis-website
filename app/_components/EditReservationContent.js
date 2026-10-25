@@ -1,12 +1,23 @@
 import SubmitButton from "@/app/_components/SubmitButton";
 import { updateReservation } from "@/app/_lib/actions";
+import { auth } from "@/app/_lib/auth";
 import { getBooking, getCabin } from "@/app/_lib/data-service";
 import { connection } from "next/server";
 
 async function EditReservationContent({ bookingId }) {
   await connection();
 
-  const { numGuests, observations, cabinId } = await getBooking(bookingId);
+  // authorization prevent user to show other users data
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in");
+
+  const booking = await getBooking(bookingId);
+  if (booking.guestId !== session.user.guestId) {
+    throw new Error("You are not allowed to view this booking");
+  }
+  //
+
+  const { numGuests, observations, cabinId } = booking;
   const { maxCapacity } = await getCabin(cabinId);
   return (
     <form
