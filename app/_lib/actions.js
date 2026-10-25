@@ -3,15 +3,37 @@
 import { revalidatePath } from "next/cache";
 import { auth, signIn, signOut } from "./auth";
 import { supabase } from "./supabase";
-import { getBookings } from "./data-service";
+import { getBookedDatesByCabinId, getBookings } from "./data-service";
 import { redirect } from "next/navigation";
 
 export async function createBooking(bookingData, formData) {
   const session = await auth();
   if (!session) throw new Error("You must be logged in");
 
+  const startDate = new Date(bookingData.startDate);
+  const endDate = new Date(bookingData.endDate);
+
+  if (
+    Number.isNaN(startDate.getTime()) ||
+    Number.isNaN(endDate.getTime()) ||
+    startDate >= endDate
+  ) {
+    throw new Error("Please select a valid reservation range");
+  }
+
+  const bookedDates = await getBookedDatesByCabinId(bookingData.cabinId);
+  const hasUnavailableDate = bookedDates.some(
+    (date) => date >= startDate && date <= endDate,
+  );
+
+  if (hasUnavailableDate) {
+    throw new Error("Some selected dates are no longer available");
+  }
+
   const newBooking = {
     ...bookingData,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
     guestId: session.user.guestId,
     numGuests: Number(formData.get("numGuests")),
     observations: formData.get("observations").slice(0, 1000),
