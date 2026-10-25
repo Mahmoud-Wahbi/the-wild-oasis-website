@@ -52,7 +52,7 @@ export async function updateGuest(formData) {
 
   if (error) throw new Error("Guest could not be updated");
 
-  revalidatePath("account/profile");
+  revalidatePath("/account/profile");
 }
 
 export async function deleteReservation(bookingId) {
@@ -73,7 +73,7 @@ export async function deleteReservation(bookingId) {
 
   if (error) throw new Error("Booking could not be deleted");
 
-  revalidatePath("account/reservations");
+  revalidatePath("/account/reservations");
 }
 
 export async function updateReservation(formData) {

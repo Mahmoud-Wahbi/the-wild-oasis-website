@@ -2,11 +2,16 @@ import { eachDayOfInterval } from "date-fns";
 
 import { supabase } from "./supabase";
 import { notFound } from "next/navigation";
+import { cacheLife, cacheTag } from "next/cache";
 
 /////////////
 // GET
 
 export async function getCabin(id) {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("cabins");
+
   const { data, error } = await supabase
     .from("Cabins")
     .select("*")
@@ -39,6 +44,10 @@ export async function getCabinPrice(id) {
 }
 
 export const getCabins = async function () {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("cabins");
+
   const { data, error } = await supabase
     .from("Cabins")
     .select("id, name, maxCapacity, regularPrice, discount, image")
@@ -131,6 +140,10 @@ export async function getBookedDatesByCabinId(cabinId) {
 }
 
 export async function getSettings() {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("settings");
+
   const { data, error } = await supabase.from("settings").select("*").single();
 
   // For testing
@@ -145,6 +158,9 @@ export async function getSettings() {
 }
 
 export async function getCountries() {
+  "use cache";
+  cacheLife("days");
+  cacheTag("countries");
   try {
     const res = await fetch(
       "https://countriesnow.space/api/v0.1/countries/flag/images",
