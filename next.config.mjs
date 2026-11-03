@@ -4,6 +4,10 @@ const nextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
 
+  turbopack: {
+    root: process.cwd(),
+  },
+
   images: {
     remotePatterns: [
       {
@@ -13,6 +17,7 @@ const nextConfig = {
       },
     ],
   },
+
   // output: "export",
 };
 
