@@ -2,8 +2,14 @@ import { UsersIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 
-function CabinCard({ cabin }) {
+import type { CabinSummaryProps } from "../_types/index";
+
+function CabinCard({ cabin }: CabinSummaryProps) {
   const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
+
+  if (image === null || regularPrice === null || discount === null) {
+    throw new Error(`Cabin ${id} has incomplite data`);
+  }
 
   return (
     <div className="flex border-primary-800 border">

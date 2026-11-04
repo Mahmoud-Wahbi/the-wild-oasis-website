@@ -1,4 +1,7 @@
 "use client";
+
+import { useReservation } from "./ReservationContext";
+
 import {
   differenceInDays,
   isPast,
@@ -7,36 +10,58 @@ import {
 } from "date-fns";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { useReservation } from "./ReservationContext";
 
-function isAlreadyBooked(range, datesArr) {
-  return (
-    range.from &&
-    range.to &&
-    datesArr.some((date) =>
-      isWithinInterval(date, { start: range.from, end: range.to }),
-    )
-  );
+import type { DateRange } from "react-day-picker";
+import type { DateSelectorComponentProps } from "../_types/index";
+
+function isAlreadyBooked(range: DateRange, datesArr: Date[]): boolean {
+  if (!range.from || !range.to) return false;
+
+  const start = range.from;
+  const end = range.to;
+
+  return datesArr.some((date) => isWithinInterval(date, { start, end }));
 }
 
-function DateSelector({ settings, bookedDates, cabin }) {
+function DateSelector({
+  settings,
+  bookedDates,
+  cabin,
+}: DateSelectorComponentProps) {
   const { range, setRange, resetRange } = useReservation();
 
-  const displayRange = isAlreadyBooked(range, bookedDates) ? {} : range;
+  const displayRange: DateRange | undefined = isAlreadyBooked(
+    range,
+    bookedDates,
+  )
+    ? undefined
+    : range;
 
   const { regularPrice, discount } = cabin;
-  const numNights = differenceInDays(displayRange.to, displayRange.from);
+
+  //type narrowang
+  if (regularPrice === null || discount === null) return;
+
+  const numNights =
+    displayRange?.from && displayRange.to
+      ? differenceInDays(displayRange.to, displayRange.from)
+      : 0;
   const cabinPrice = numNights * (regularPrice - discount);
 
   // SETTINGS
   const { minBookingLength, maxBookingLength } = settings;
+  if (minBookingLength === null || maxBookingLength === null) return;
 
   return (
     <div className="flex flex-col justify-between">
       <DayPicker
         className="pt-12 place-self-center"
         mode="range"
-        onSelect={setRange}
+        onSelect={(selectedRange) => {
+          if (selectedRange) {
+            setRange(selectedRange);
+          }
+        }}
         selected={displayRange}
         min={minBookingLength + 1}
         max={maxBookingLength}

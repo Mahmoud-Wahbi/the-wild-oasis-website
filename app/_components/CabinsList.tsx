@@ -1,22 +1,30 @@
 import { getCabins } from "@/app/_lib/data-service";
 import CabinCard from "@/app/_components/CabinCard";
+import type { FilterProps } from "../_types/index";
 // import { unstable_noStore as noStore } from "next/cache";
 
-async function CabinsList({ filter }) {
+async function CabinsList({ filter }: FilterProps) {
   // noStore();
 
   const cabins = await getCabins();
 
-  let filterdData;
+  let filterdData = cabins;
   if (filter === "all") filterdData = cabins;
   if (filter === "small")
-    filterdData = cabins.filter((cabin) => cabin.maxCapacity <= 3);
+    filterdData = cabins.filter(
+      (cabin) => cabin.maxCapacity !== null && cabin.maxCapacity <= 3,
+    );
   if (filter === "medium")
     filterdData = cabins.filter(
-      (cabin) => cabin.maxCapacity >= 4 && cabin.maxCapacity <= 7,
+      (cabin) =>
+        cabin.maxCapacity !== null &&
+        cabin.maxCapacity >= 4 &&
+        cabin.maxCapacity <= 7,
     );
   if (filter === "large")
-    filterdData = cabins.filter((cabin) => cabin.maxCapacity >= 8);
+    filterdData = cabins.filter(
+      (cabin) => cabin.maxCapacity !== null && cabin.maxCapacity >= 8,
+    );
 
   return (
     <div>

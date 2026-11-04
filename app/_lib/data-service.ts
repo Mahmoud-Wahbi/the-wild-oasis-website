@@ -4,11 +4,10 @@ import { supabase } from "./supabase";
 import { notFound } from "next/navigation";
 import { cacheLife, cacheTag } from "next/cache";
 
-import { Cabin, NewGuest } from "../_types";
+import type { Cabin, Country, NewGuest } from "../_types";
 
 /////////////
 // GET
-
 export async function getCabin(id: number): Promise<Cabin> {
   "use cache";
   cacheLife("hours");
@@ -159,7 +158,7 @@ export async function getSettings() {
   return data;
 }
 
-export async function getCountries() {
+export async function getCountries(): Promise<Country[]> {
   "use cache";
   cacheLife("days");
   cacheTag("countries");

@@ -1,15 +1,22 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+
+import type { Filter as FilterType } from "../_types";
+import { isFilter } from "../_types";
 
 function Filter() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathName = usePathname();
 
-  const activeFilter = searchParams.get("capacity") ?? "all";
+  const capacity = searchParams.get("capacity");
+  const activeFilter: FilterType =
+    capacity && isFilter(capacity) ? capacity : "all";
 
-  function handleFilter(filter) {
+  function handleFilter(filter: FilterType) {
     const params = new URLSearchParams(searchParams);
     params.set("capacity", filter);
     router.replace(`${pathName}?${params.toString()}`, { scroll: false });
@@ -48,7 +55,14 @@ function Filter() {
   );
 }
 
-function Button({ filter, handleFilter, activeFilter, children }) {
+type ButtonProps = {
+  filter: FilterType;
+  activeFilter: FilterType;
+  handleFilter: (filter: FilterType) => void;
+  children: ReactNode;
+};
+
+function Button({ filter, activeFilter, handleFilter, children }: ButtonProps) {
   return (
     <button
       className={`px-5 py-2 hover:bg-primary-700 ${filter === activeFilter ? `bg-primary-700 text-primary-50` : ``}`}

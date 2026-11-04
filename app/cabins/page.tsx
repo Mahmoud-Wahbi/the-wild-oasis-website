@@ -4,13 +4,21 @@ import Spinner from "../_components/Spinner";
 import Filter from "../_components/Filter";
 import ReservationReminder from "../_components/ReservationReminder";
 
+import type {
+  CabinsPageProps,
+  Filter as FilterType,
+} from "../_types/index";
+import { isFilter } from "../_types/index";
+
 export const metadata = {
   title: "Cabins",
 };
 
-export default async function Page({ searchParams }) {
+export default async function Page({ searchParams }: CabinsPageProps) {
   const resolvedPrams = await searchParams;
-  const filter = resolvedPrams?.capacity ?? "all";
+  const capacity = resolvedPrams?.capacity;
+
+  const filter: FilterType = capacity && isFilter(capacity) ? capacity : "all";
 
   return (
     <div>

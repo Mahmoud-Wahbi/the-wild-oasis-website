@@ -1,10 +1,14 @@
 import TextExpander from "@/app/_components/TextExpander";
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import type { CabinComponentProps } from "../_types";
 
-function Cabin({ cabin }) {
-  const { id, name, maxCapacity, regularPrice, discount, image, description } =
-    cabin;
+function Cabin({ cabin }: CabinComponentProps) {
+  const { name, maxCapacity, image, description } = cabin;
+
+  if (!image) {
+    throw new Error("Cabin image is not provided");
+  }
 
   return (
     <div className="grid grid-cols-[3fr_4fr] gap-20 border border-primary-800 py-3 px-10 mb-24">
