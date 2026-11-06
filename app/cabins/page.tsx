@@ -4,10 +4,7 @@ import Spinner from "../_components/Spinner";
 import Filter from "../_components/Filter";
 import ReservationReminder from "../_components/ReservationReminder";
 
-import type {
-  CabinsPageProps,
-  Filter as FilterType,
-} from "../_types/index";
+import type { CabinsPageProps, Filter as FilterType } from "../_types/index";
 import { isFilter } from "../_types/index";
 
 export const metadata = {

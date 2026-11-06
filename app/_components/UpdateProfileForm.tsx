@@ -4,7 +4,9 @@ import { useState } from "react";
 import { updateGuest } from "../_lib/actions";
 import SubmitButton from "./SubmitButton";
 
-function UpdateProfileForm({ guest, children }) {
+import type { UpdateProfileFormProps } from "../_types/index";
+
+function UpdateProfileForm({ guest, children }: UpdateProfileFormProps) {
   const [counter, setCounter] = useState(0);
 
   const { fullName, emailAddress, nationality, natinalID, countryFlag } = guest;
@@ -18,7 +20,7 @@ function UpdateProfileForm({ guest, children }) {
         <label>Full name</label>
         <input
           disabled
-          defaultValue={fullName}
+          defaultValue={fullName ?? ""}
           name="fullName"
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
@@ -28,7 +30,7 @@ function UpdateProfileForm({ guest, children }) {
         <label>Email address</label>
         <input
           disabled
-          defaultValue={emailAddress}
+          defaultValue={emailAddress ?? ""}
           name="emailAddress"
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
@@ -38,7 +40,7 @@ function UpdateProfileForm({ guest, children }) {
         <div className="flex items-center justify-between">
           <label htmlFor="nationality">Where are you from?</label>
           <img
-            src={countryFlag}
+            src={countryFlag ?? ""}
             alt="Country flag"
             className="h-5 rounded-sm"
           />
@@ -50,7 +52,7 @@ function UpdateProfileForm({ guest, children }) {
         <label htmlFor="nationalID">National ID number</label>
         <input
           name="natinalID"
-          defaultValue={natinalID}
+          defaultValue={natinalID ?? ""}
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
         />
       </div>

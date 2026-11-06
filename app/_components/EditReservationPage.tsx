@@ -1,6 +1,8 @@
 import EditReservationContent from "./EditReservationContent";
 
-async function EditReservationPage({ params }) {
+import type { EditReservationPageProps } from "../_types/index";
+
+async function EditReservationPage({ params }: EditReservationPageProps) {
   const { bookingId } = await params;
 
   return (

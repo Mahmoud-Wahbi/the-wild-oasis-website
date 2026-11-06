@@ -2,7 +2,9 @@
 
 import { useFormStatus } from "react-dom";
 
-function SubmitButton({ children, pendingText }) {
+import type { SubmitButton } from "../_types/index";
+
+function SubmitButton({ children, pendingText }: SubmitButton) {
   const { pending } = useFormStatus();
 
   return (

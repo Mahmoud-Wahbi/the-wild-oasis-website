@@ -4,12 +4,16 @@ import { auth } from "@/app/_lib/auth";
 import { getBooking, getCabin } from "@/app/_lib/data-service";
 import { connection } from "next/server";
 
-async function EditReservationContent({ bookingId }) {
+import type { EditReservationContentProps } from "../_types/index";
+
+async function EditReservationContent({
+  bookingId,
+}: EditReservationContentProps) {
   await connection();
 
   // authorization prevent user to show other users data
   const session = await auth();
-  if (!session) throw new Error("You must be logged in");
+  if (!session?.user?.guestId) throw new Error("You must be logged in");
 
   const booking = await getBooking(bookingId);
   if (booking.guestId !== session.user.guestId) {
@@ -18,7 +22,15 @@ async function EditReservationContent({ bookingId }) {
   //
 
   const { numGuests, observations, cabinId } = booking;
+
+  if (cabinId === null) {
+    throw new Error("Booking has no cabin ID");
+  }
   const { maxCapacity } = await getCabin(cabinId);
+  if (maxCapacity === null) {
+    throw new Error("Cabin capacity is missing");
+  }
+
   return (
     <form
       action={updateReservation}
@@ -29,7 +41,7 @@ async function EditReservationContent({ bookingId }) {
         <select
           name="numGuests"
           id="numGuests"
-          defaultValue={numGuests}
+          defaultValue={numGuests ?? ""}
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
           required
         >

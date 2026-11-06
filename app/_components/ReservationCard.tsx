@@ -3,12 +3,21 @@ import { format, formatDistance, isPast, isToday, parseISO } from "date-fns";
 import DeleteReservation from "./DeleteReservation";
 import Image from "next/image";
 
-export const formatDistanceFromNow = (dateStr) =>
-  formatDistance(parseISO(dateStr), new Date(), {
+import type { ReservationCardProps } from "../_types/index";
+
+export const formatDistanceFromNow = (dateStr: string | null) => {
+  if (!dateStr) return "Unknown date";
+
+  return formatDistance(parseISO(dateStr), new Date(), {
     addSuffix: true,
   }).replace("about ", "");
+};
 
-function ReservationCard({ booking, onDelete }) {
+function ReservationCard({ booking, onDelete }: ReservationCardProps) {
+  if (!booking.Cabins) {
+    return null;
+  }
+
   const {
     id,
     guestId,
@@ -17,10 +26,25 @@ function ReservationCard({ booking, onDelete }) {
     numNights,
     totalPrice,
     numGuests,
-    status,
     created_at,
     Cabins: { name, image },
   } = booking;
+
+  if (image === null) {
+    throw new Error("No cabin image for reservation was provided");
+  }
+
+  if (startDate === null) {
+    throw new Error("No StartDate for reservation was provided");
+  }
+
+  if (endDate === null) {
+    throw new Error("No cabin image for reservation was provided");
+  }
+
+  if (numGuests === null) {
+    throw new Error("No GuestNumber for reservation was provided");
+  }
 
   return (
     <div className="flex border border-primary-800">

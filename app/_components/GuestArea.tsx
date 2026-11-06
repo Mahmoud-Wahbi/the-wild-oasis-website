@@ -13,17 +13,14 @@ export default async function GuestArea() {
     >
       <img
         src={session.user.image}
-        alt={session.user.name}
+        alt={session.user.name ?? "Guest"}
         referrerPolicy="no-referrer"
         className="h-8 rounded-full"
       />
       <span>Guest area</span>
     </Link>
   ) : (
-    <Link
-      href="/account"
-      className="hover:text-accent-400 transition-colors"
-    >
+    <Link href="/account" className="hover:text-accent-400 transition-colors">
       <span>Guest area</span>
     </Link>
   );

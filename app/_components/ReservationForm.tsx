@@ -5,27 +5,35 @@ import { useReservation } from "./ReservationContext";
 import { createBooking } from "@/app/_lib/actions";
 import SubmitButton from "./SubmitButton";
 
-function ReservationForm({ cabin, user }) {
+import type { ReservationFormProps } from "../_types/index";
+
+function ReservationForm({ cabin, user }: ReservationFormProps) {
   const { range } = useReservation();
 
   const { maxCapacity, regularPrice, discount, id } = cabin;
 
+  if (maxCapacity === null || regularPrice === null || discount === null) {
+    throw new Error("some cabin inforamtion are not provided");
+  }
+
   const startDate = range.from;
   const endDate = range.to;
 
-  const numNights = differenceInDays(endDate, startDate);
+  const bookingData =
+    startDate && endDate
+      ? {
+          startDate,
+          endDate,
+          numNights: differenceInDays(endDate, startDate),
+          cabinPrice:
+            differenceInDays(endDate, startDate) * (regularPrice - discount),
+          cabinId: id,
+        }
+      : null;
 
-  const cabinPrice = numNights * (regularPrice - discount);
-
-  const bookingData = {
-    startDate,
-    endDate,
-    numNights,
-    cabinPrice,
-    cabinId: id,
-  };
-
-  const createBookingWithData = createBooking.bind(null, bookingData);
+  const createBookingWithData = bookingData
+    ? createBooking.bind(null, bookingData)
+    : undefined;
 
   return (
     <div className="scale-[1.01]">
@@ -37,8 +45,8 @@ function ReservationForm({ cabin, user }) {
             // Important to display google profile images
             referrerPolicy="no-referrer"
             className="h-8 rounded-full"
-            src={user.image}
-            alt={user.name}
+            src={user.image ?? ""}
+            alt={user.name ?? "Guest"}
           />
           <p>{user.name}</p>
         </div>

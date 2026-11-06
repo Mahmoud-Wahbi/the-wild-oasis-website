@@ -5,7 +5,9 @@ import DateSelector from "./DateSelector";
 import LoginMessage from "./LoginMessage";
 import ReservationForm from "./ReservationForm";
 
-async function Reservation({ cabin }) {
+import type { ReservationProps } from "../_types/index";
+
+async function Reservation({ cabin }: ReservationProps) {
   await connection();
   const [settings, bookedDates] = await Promise.all([
     getSettings(),

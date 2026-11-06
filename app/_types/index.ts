@@ -2,6 +2,7 @@ import { DateRange } from "react-day-picker";
 import type { Database } from "./database.types";
 import { ReactNode } from "react";
 import type { Dispatch, SetStateAction } from "react";
+import { User } from "next-auth";
 
 // Cabin Type
 export type Cabin = Database["public"]["Tables"]["Cabins"]["Row"];
@@ -59,7 +60,7 @@ export type BookingWithCabin = Pick<
   | "guestId"
   | "cabinId"
 > & {
-  Cabins: Pick<Cabin, "name" | "image">;
+  Cabins: Pick<Cabin, "name" | "image"> | null;
 };
 
 // Settings Type
@@ -94,5 +95,85 @@ export type ReservationContextType = {
 };
 
 export type ReservationProviderProps = {
+  children: ReactNode;
+};
+
+//=====================================//
+//Delete Reservation
+//=====================================//
+export type DeleteReservationProps = {
+  bookingId: number;
+  onDelete: (bookingId: number) => Promise<void>;
+};
+
+//=====================================//
+//Edit Reservation Content
+//=====================================//
+
+export type EditReservationContentProps = { bookingId: number };
+
+//=====================================//
+//Edit Reservation Page
+//=====================================//
+export type EditReservationPageProps = {
+  params: Promise<{ bookingId: number }>;
+};
+
+//=====================================//
+//Edit Reservation
+//=====================================//
+export type ReservationProps = {
+  cabin: Cabin;
+};
+
+//=====================================//
+//Edit Reservation
+//=====================================//
+
+export type ReservationCardProps = {
+  booking: BookingWithCabin;
+  onDelete: (bookingId: number) => Promise<void>;
+};
+
+//=====================================//
+//Reservation Form
+//=====================================//
+export type ReservationFormProps = {
+  cabin: Pick<Cabin, "id" | "maxCapacity" | "regularPrice" | "discount">;
+  user: User;
+};
+
+//=====================================//
+//Reservations List
+//=====================================//
+export type ReservationsListProps = {
+  bookings: BookingWithCabin[];
+};
+
+//=====================================//
+// Select Country
+//=====================================//
+
+export type SelectCountryProps = {
+  name: string;
+  id: string;
+  className: string;
+  defaultCountry: string;
+};
+
+//=====================================//
+// Submit Button
+//=====================================//
+
+export type SubmitButton = {
+  children: ReactNode;
+  pendingText: string;
+};
+
+//=====================================//
+//Update Profile Form
+//=====================================//
+export type UpdateProfileFormProps = {
+  guest: Guest;
   children: ReactNode;
 };

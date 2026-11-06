@@ -8,6 +8,10 @@ export default async function ReservationsContent() {
   await connection();
 
   const session = await auth();
+
+  if (!session?.user.guestId || session?.user.guestId === null)
+    throw new Error("user was not found");
+
   const bookings = await getBookings(session.user.guestId);
 
   return bookings.length === 0 ? (
