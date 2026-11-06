@@ -8,6 +8,7 @@ const josefin = Josefin_Sans({
 import "@/app/_styles/globals.css";
 import Header from "./_components/Header";
 import { ReservationProvider } from "./_components/ReservationContext";
+import { ReactNode } from "react";
 
 export const metadata = {
   title: {
@@ -18,7 +19,7 @@ export const metadata = {
     "Luxurious cabin hotel, located in the heart of the Italian Dolomites, surrounded by beautiful mountains and dark forests.",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body

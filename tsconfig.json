@@ -28,7 +28,7 @@
     "app/_components/CabinCard.js",
     "app/_components/CabinsList.tsx",
     "app/cabins/page.tsx",
-    "app/page.js",
+    "app/page.tsx",
     "app/cabins/[cabinId]/pagetsx",
     "app/_components/CabinContent.js",
     "app/_components/DeleteReservation.tsx"
