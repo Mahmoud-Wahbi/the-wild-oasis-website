@@ -6,7 +6,12 @@ import { supabase } from "./supabase";
 import { getBookedDatesByCabinId, getBookings } from "./data-service";
 import { redirect } from "next/navigation";
 
-export async function createBooking(bookingData, formData) {
+import type { BookingData } from "../_types/index";
+
+export async function createBooking(
+  bookingData: BookingData,
+  formData: FormData,
+) {
   const session = await auth();
   if (!session) throw new Error("You must be logged in");
 
@@ -30,13 +35,20 @@ export async function createBooking(bookingData, formData) {
     throw new Error("Some selected dates are no longer available");
   }
 
+  const numGuests = Number(formData.get("numGuests"));
+  if (!Number.isInteger(numGuests) || numGuests < 1) {
+    throw new Error("Invalid number of guests");
+  }
+  const observations = formData.get("observations");
+
   const newBooking = {
     ...bookingData,
     startDate: startDate.toISOString(),
     endDate: endDate.toISOString(),
     guestId: session.user.guestId,
     numGuests: Number(formData.get("numGuests")),
-    observations: formData.get("observations").slice(0, 1000),
+    observations:
+      typeof observations === "string" ? observations.slice(0, 1000) : "",
     extrasPrice: 0,
     totalPrice: bookingData.cabinPrice,
     isPaid: false,
@@ -55,19 +67,26 @@ export async function createBooking(bookingData, formData) {
   redirect(`/cabins/thankyou`);
 }
 
-export async function updateGuest(formData) {
+export async function updateGuest(formData: FormData) {
   const session = await auth();
   if (!session) throw new Error("You must be logged in");
 
   const natinalID = formData.get("natinalID");
-  const [nationality, countryFlag] = formData.get("nationality").split("%");
+  const nationalityData = formData.get("nationality");
 
-  if (!/^[a-zA-Z0-9]{6,12}$/.test(natinalID))
-    throw new Error("please provide a valid nationalId");
+  if (typeof natinalID !== "string" || typeof nationalityData !== "string") {
+    throw new Error("Invalid form data");
+  }
+
+  const [nationality, countryFlag] = nationalityData.split("%");
+
+  if (!/^[a-zA-Z0-9]{6,12}$/.test(natinalID)) {
+    throw new Error("Please provide a valid nationalId");
+  }
 
   const updateData = { nationality, countryFlag, natinalID };
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("guests")
     .update(updateData)
     .eq("id", session.user.guestId);
@@ -77,7 +96,7 @@ export async function updateGuest(formData) {
   revalidatePath("/account/profile");
 }
 
-export async function deleteReservation(bookingId) {
+export async function deleteReservation(bookingId: number) {
   const session = await auth();
   if (!session) throw new Error("You must be logged in");
 
@@ -98,7 +117,7 @@ export async function deleteReservation(bookingId) {
   revalidatePath("/account/reservations");
 }
 
-export async function updateReservation(formData) {
+export async function updateReservation(formData: FormData) {
   const bookingId = Number(formData.get("bookingId"));
 
   // 1) Authantication
@@ -114,8 +133,18 @@ export async function updateReservation(formData) {
     throw new Error("You are not allowed to update this booking");
 
   // 3) Building data object
+  const numGuests = Number(formData.get("numGuests"));
+
+  if (!Number.isInteger(numGuests) || numGuests < 1) {
+    throw new Error("Invalid number of guests");
+  }
+
+  const observations = formData.get("observations");
+
   const updatedData = {
-    observations: formData.get("observations").slice(0, 1000),
+    observations:
+      typeof observations === "string" ? observations.slice(0, 1000) : "",
+
     numGuests: Number(formData.get("numGuests")),
   };
 

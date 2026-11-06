@@ -177,3 +177,13 @@ export type UpdateProfileFormProps = {
   guest: Guest;
   children: ReactNode;
 };
+
+// actions
+//Create Booking
+export type BookingData = {
+  startDate: Date;
+  endDate: Date;
+  numNights: number;
+  cabinPrice: number;
+  cabinId: number;
+};
